@@ -1,9 +1,36 @@
-const addButton = document.getElementById('add-button');
+import {Todo} from './todo.model'
 
+
+const addButton = document.getElementById('add-button');
+// let todoList = [
+//   new Todo('Estudiar en Platzi'),
+//   new Todo('Practicar programación')
+// ];
+
+let todoList = [];
 
 addButton.addEventListener('click', addTodo);
 
-let index = 3;
+// let index = 3;
+
+function renderList(){
+  const todoList = JSON.parse(localStorage.getItem('todoList'));
+  const todo1 = new Todo('patata');
+
+  console.log('No es un TODO',todoList[0]);
+  console.log('Si es un TODO', todo1);
+
+  todoList.map(item => {
+    const todo = new Todo(item.title);
+    return todo;
+  }).forEach((todo) =>{
+    const liElement = todo.toHtml();
+    createTodoFromHtml(liElement);
+    addListeners(todo);
+    todoList.push(todo);
+  });
+}
+  
 
 function addTodo(){
   const todoInput = document.getElementById('todo-input');
@@ -11,11 +38,22 @@ function addTodo(){
     return;
   }
 
-  createTodoShort(todoInput.value);
+  const todo = new Todo(todoInput.value);
+  createTodoFromHtml(todo.toHtml());
+  addListeners(todo)
+  todoList.push(todo);
+
+  localStorage.setItem('todoList', JSON.stringify(todoList));
   
   todoInput.value = '';
   
-  index++;
+  // index++;
+}
+
+
+function createTodoFromHtml(liElement) {
+  const $list = document.querySelector('ul');
+  $list.insertAdjacentHTML('beforeend', liElement);
 }
 
 function createTodoShort(value) {
@@ -83,7 +121,10 @@ function createTodo(value){
   $btnEditar.classList.add('btn');
   $btnEditar.classList.add('btn-info');
   $btnEditar.classList.add('me-1');
-  $btnEditar.innerText = 'Editar';
+  $btnEditar.innerText = 'Editar'
+
+
+
   $todoActions.appendChild($btnEditar);
   
   const $btnRemove = document.createElement('button')
@@ -94,3 +135,28 @@ function createTodo(value){
   
 }
 
+function addListeners(todo) {
+  document.querySelector(`#delete-${todo.id}`).addEventListener('click', () => removeTodo(todo));
+  document.querySelector(`#edit-${todo.id}`).addEventListener('click', () => {
+    todo.editTodo();
+
+
+    localStorage.setItem('todoList', JSON.stringify(todoList));
+    
+  });
+}
+function removeTodo(todo){
+  todo.removeTodo();
+
+  // const todoIndex = todoList.findIndex((item) => item.id === todo.id);
+  // todoList.splice(todoIndex, 1);
+
+  todoList = todoList.filter((item) => item.id !== todo.id); 
+
+  console.log(todoList);
+  localStorage.setItem('todoList', JSON.stringify(todoList));
+
+}
+
+
+renderList();
