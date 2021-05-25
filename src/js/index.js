@@ -18,6 +18,30 @@ function addTodo(){
   index++;
 }
 
+function createTodoShort(value) {
+  const newTodo = `
+    <li class="list-group-item">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="todo-${index}">
+            <label class="form-check-label" for="todo-${index}">
+              ${value}
+            </label>
+          </div>
+        </div>
+        <div class="col todo-actions" >
+          <button class="btn btn-info me-1">Editar</button>
+          <button class="btn btn-danger">Eliminar</button>
+        </div>
+      </div>
+    </li>
+  `;
+
+  const $list = document.querySelector('ul');
+  $list.insertAdjacentHTML('beforeend', newTodo);
+}
+
 function createTodo(value){
   const $list = document.getElementsByClassName('list-group');
 
@@ -70,27 +94,3 @@ function createTodo(value){
   
 }
 
-
-function createTodoShort(value) {
-  const newTodo = `
-    <li class="list-group-item">
-      <div class="row align-items-center">
-        <div class="col">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="todo-${index}">
-            <label class="form-check-label" for="todo-${index}">
-              ${value}
-            </label>
-          </div>
-        </div>
-        <div class="col todo-actions" >
-          <button class="btn btn-info me-1">Editar</button>
-          <button class="btn btn-danger">Eliminar</button>
-        </div>
-      </div>
-    </li>
-  `;
-
-  const $list = document.querySelector('ul');
-  $list.insertAdjacentHTML('beforeend', newTodo);
-}
