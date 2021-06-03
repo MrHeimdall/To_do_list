@@ -2,33 +2,29 @@ import {Todo} from './todo.model'
 
 
 const addButton = document.getElementById('add-button');
-// let todoList = [
-//   new Todo('Estudiar en Platzi'),
-//   new Todo('Practicar programación')
-// ];
 
 let todoList = [];
 
 addButton.addEventListener('click', addTodo);
 
-// let index = 3;
-
 function renderList(){
-  const todoList = JSON.parse(localStorage.getItem('todoList'));
-  const todo1 = new Todo('patata');
+  const storedList = JSON.parse(localStorage.getItem('todoList'));
 
-  console.log('No es un TODO',todoList[0]);
-  console.log('Si es un TODO', todo1);
-
-  todoList.map(item => {
-    const todo = new Todo(item.title);
+  todoList = storedList.map(item => {
+    const todo = new Todo(item.title, item.id, item.checked);
     return todo;
-  }).forEach((todo) =>{
+  });
+  
+  todoList.forEach((todo) =>{
     const liElement = todo.toHtml();
     createTodoFromHtml(liElement);
+    // const input = document.getElementById(`todo-${todo.id}`);
+    // console.log('INPUT', input);
+    // input.checked = todo.checked;
     addListeners(todo);
-    todoList.push(todo);
   });
+
+  pendingTodos();
 }
   
 
@@ -46,8 +42,8 @@ function addTodo(){
   localStorage.setItem('todoList', JSON.stringify(todoList));
   
   todoInput.value = '';
-  
-  // index++;
+
+  pendingTodos();
 }
 
 
@@ -124,7 +120,6 @@ function createTodo(value){
   $btnEditar.innerText = 'Editar'
 
 
-
   $todoActions.appendChild($btnEditar);
   
   const $btnRemove = document.createElement('button')
@@ -140,10 +135,37 @@ function addListeners(todo) {
   document.querySelector(`#edit-${todo.id}`).addEventListener('click', () => {
     todo.editTodo();
 
-
     localStorage.setItem('todoList', JSON.stringify(todoList));
-    
   });
+  document.getElementById(`todo-${todo.id}`).addEventListener('change', () => checkedTodo(todo.id))
+}
+
+
+function checkedTodo(id){
+  const todo = todoList.find((item) => item.id === id);
+  todo.checked = !todo.checked;
+
+  // todo.checked = todo.checked ? false : true;
+  
+  // if(todo.checked){
+  //   todo.checked = false
+  // }else{
+  //   todo.checked = true
+  // } 
+  
+  
+  // if(todo.checked === true){
+  //   todo.checked = false
+  // }else{
+  //   todo.checked = true
+
+  // }
+
+
+
+  localStorage.setItem('todoList', JSON.stringify(todoList));
+
+  pendingTodos();
 }
 function removeTodo(todo){
   todo.removeTodo();
@@ -156,7 +178,45 @@ function removeTodo(todo){
   console.log(todoList);
   localStorage.setItem('todoList', JSON.stringify(todoList));
 
+  pendingTodos();
+}
+renderList();
+
+function pendingTodos(){
+  const completed = document.getElementById('completed');
+  completed.innerText = `Completed ${todoList.filter(item => item.checked).length} of ${todoList.length}`;
+
+  // console.log(completed.innerText);
+  //   //frutas === completed.innerText.split(' ')
+  // const textArr = completed.innerText.split(' ');
+  // let [
+  //   completedString,
+  //   ofString
+  // ] = completed.innerText.split(' ');
+  // console.log(completedString,
+  //   ofString);
+
+  
+  // const patata = todoList.filter(item => item.checked)
+  // completedString +=  ` ${patata.length}`;
+  // ofString += ` ${todoList.length}`;
+
+  // console.log(textArr);
+
+  // const otherCompletedString = completedString + ' ' + ofString;
+
+  // const completedPhrase = textArr.join(' ');
+  // console.log(completedPhrase);
+  // console.log(otherCompletedString);
+
+
+  // const stringWithConcatOperator = completed.innerText.split(' ')
+  //   .map((word, i) => `${word} ${i === 0 ? patata.length : todoList.length}`)
+  //   .join(' ');
+
+  // console.log('CONCAT', stringWithConcatOperator);
+  // console.log(`completed ${patata.length} of ${todoList.length} `)
+  
 }
 
-
-renderList();
+pendingTodos();

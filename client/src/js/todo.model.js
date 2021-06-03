@@ -2,10 +2,10 @@ import { v4 as uuid } from 'uuid';
 
 export class Todo {
  
-  constructor(title) {
+  constructor(title, id = uuid(), checked = false) {
     this.title = title;
-    this.checked = false;
-    this.id = uuid();
+    this.checked = checked;
+    this.id = id;
   }
 
   toHtml() {
@@ -14,7 +14,7 @@ export class Todo {
         <div class="row align-items-center">
           <div class="col">
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="todo-${this.id}">
+              <input class="form-check-input" type="checkbox" value="" id="todo-${this.id}" ${this.checked ? 'checked' : ''}>
               <label class="form-check-label" for="todo-${this.id}">
                 ${this.title}
               </label>
